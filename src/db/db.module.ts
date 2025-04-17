@@ -1,8 +1,12 @@
-import { Module } from "@nestjs/common";
+import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { datasource } from "./datasource";
 import { addTransactionalDataSource } from "typeorm-transactional";
+import { AccountRepository } from "./repository/account.repository";
 
+const repositories = [AccountRepository];
+
+@Global()
 @Module({
 	imports: [
 		TypeOrmModule.forRootAsync({
@@ -10,5 +14,7 @@ import { addTransactionalDataSource } from "typeorm-transactional";
 			dataSourceFactory: async () => addTransactionalDataSource(datasource),
 		}),
 	],
+	providers: [...repositories],
+	exports: [...repositories],
 })
 export class DbModule {}
